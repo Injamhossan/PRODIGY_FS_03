@@ -6,7 +6,41 @@ import { Mail, Lock, User, ArrowRight, Github } from "lucide-react";
 import logo from "../../assets/Main/logo.svg";
 import Image from "next/image";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+
 export default function SignupPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (res.ok) {
+        router.push("/login");
+      } else {
+        const data = await res.text();
+        alert(data || "Something went wrong");
+      }
+    } catch (err) {
+      alert("Registration failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-8">
       <motion.div
@@ -16,20 +50,23 @@ export default function SignupPage() {
       >
         <div className="text-center mb-10">
           <Link href="/" className="inline-block mb-8">
-            <Image src={logo} alt="Artisan Logo" width={120} height={40} className="h-8 w-auto mx-auto" />
+            <Image src={logo} alt="Artisan Logo" width={180} height={60} className="h-12 w-auto mx-auto" />
           </Link>
           <h1 className="text-2xl font-bold text-[#2b2825]">Create Account</h1>
           <p className="text-sm text-zinc-500 mt-2">Join our artisan community</p>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-zinc-400">Full Name</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input
+                required
                 type="text"
-                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all font-medium text-sm"
                 placeholder="John Doe"
               />
             </div>
@@ -40,8 +77,11 @@ export default function SignupPage() {
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input
+                required
                 type="email"
-                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all font-medium text-sm"
                 placeholder="name@example.com"
               />
             </div>
@@ -52,16 +92,23 @@ export default function SignupPage() {
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input
+                required
                 type="password"
-                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-[#d2714e]/20 transition-all font-medium text-sm"
                 placeholder="••••••••"
               />
             </div>
           </div>
 
-          <button className="w-full bg-[#d2714e] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#b05a3b] transition-all transform active:scale-95 shadow-lg shadow-[#d2714e]/20">
-            Sign Up
-            <ArrowRight className="w-4 h-4" />
+          <button 
+            type="submit"
+            disabled={isLoading}
+            className={`w-full bg-[#d2714e] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all transform active:scale-95 shadow-lg shadow-[#d2714e]/20 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#b05a3b]'}`}
+          >
+            {isLoading ? "Creating Account..." : "Sign Up"}
+            {!isLoading && <ArrowRight className="w-4 h-4" />}
           </button>
         </form>
 
@@ -72,7 +119,7 @@ export default function SignupPage() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4">
-          <button className="flex items-center justify-center gap-2 py-4 border border-zinc-100 rounded-2xl hover:bg-zinc-50 transition-colors font-medium text-sm">
+          <button className="flex items-center justify-center gap-2 py-4 border border-zinc-100 rounded-2xl hover:bg-zinc-50 transition-colors font-medium text-sm text-[#2b2825]">
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -81,7 +128,7 @@ export default function SignupPage() {
             </svg>
             Google
           </button>
-          <button className="flex items-center justify-center gap-2 py-4 border border-zinc-100 rounded-2xl hover:bg-zinc-50 transition-colors font-medium text-sm">
+          <button className="flex items-center justify-center gap-2 py-4 border border-zinc-100 rounded-2xl hover:bg-zinc-50 transition-colors font-medium text-sm text-[#2b2825]">
             <Github className="w-4 h-4" />
             Github
           </button>

@@ -50,7 +50,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-10">
           <Link href="/" className="inline-block mb-8">
-            <Image src={logo} alt="Artisan Logo" width={120} height={40} className="h-8 w-auto mx-auto" aria-hidden="true" />
+            <Image src={logo} alt="Artisan Logo" width={180} height={60} className="h-12 w-auto mx-auto" aria-hidden="true" />
           </Link>
           <h1 className="text-2xl font-bold text-[#2b2825]">Welcome Back</h1>
           <p className="text-sm text-zinc-500 mt-2">Sign in to your account</p>

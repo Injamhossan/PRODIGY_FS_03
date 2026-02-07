@@ -2,8 +2,13 @@ import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import prisma from "@/lib/db";
+
+import bcrypt from "bcrypt";
 
 export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID,
@@ -19,16 +24,34 @@ export const authOptions = {
         email: { label: "Email", type: "email", placeholder: "admin@artisan.com" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials, req) {
-        // This is a placeholder for actual database logic
-        // For demonstration, we'll allow any user with admin@artisan.com / password
-        const user = { id: "1", name: "Artisan Admin", email: "admin@artisan.com" };
-
-        if (credentials?.email === "admin@artisan.com" && credentials?.password === "password") {
-          return user;
-        } else {
-          return null;
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing credentials");
         }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email }
+        });
+
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordCorrect) {
+          throw new Error("Invalid credentials");
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       }
     })
   ],
@@ -39,14 +62,25 @@ export const authOptions = {
     strategy: "jwt",
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+      }
+      return token;
+    },
     async session({ session, token }) {
-      session.user.id = token.sub;
+      if (session?.user) {
+        session.user.role = token.role;
+        session.user.id = token.id;
+      }
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
+console.log("NextAuth Route Hit");
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

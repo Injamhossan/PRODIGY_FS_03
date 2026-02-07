@@ -8,6 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@auth/prisma-adapter':
+        specifier: ^2.11.1
+        version: 2.11.1(@prisma/client@6.2.1(prisma@6.2.1))
+      '@prisma/client':
+        specifier: ^6.2.1
+        version: 6.2.1(prisma@6.2.1)
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
+      dotenv:
+        specifier: ^17.2.4
+        version: 17.2.4
       framer-motion:
         specifier: ^12.33.0
         version: 12.33.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -26,10 +38,16 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      react-hot-toast:
+        specifier: ^2.6.0
+        version: 2.6.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.18
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
@@ -39,6 +57,9 @@ importers:
       eslint-config-next:
         specifier: 16.1.6
         version: 16.1.6(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      prisma:
+        specifier: ^6.2.1
+        version: 6.2.1
       tailwindcss:
         specifier: ^4
         version: 4.1.18
@@ -48,6 +69,25 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
+
+  '@auth/core@0.41.1':
+    resolution: {integrity: sha512-t9cJ2zNYAdWMacGRMT6+r4xr1uybIdmYa49calBPeTqwgAFPV/88ac9TEvCR85pvATiSPt8VaNf+Gt24JIT/uw==}
+    peerDependencies:
+      '@simplewebauthn/browser': ^9.0.1
+      '@simplewebauthn/server': ^9.0.2
+      nodemailer: ^7.0.7
+    peerDependenciesMeta:
+      '@simplewebauthn/browser':
+        optional: true
+      '@simplewebauthn/server':
+        optional: true
+      nodemailer:
+        optional: true
+
+  '@auth/prisma-adapter@2.11.1':
+    resolution: {integrity: sha512-Ke7DXP0Fy0Mlmjz/ZJLXwQash2UkA4621xCM0rMtEczr1kppLc/njCbUkHkIQ/PnmILjqSPEKeTjDPsYruvkug==}
+    peerDependencies:
+      '@prisma/client': '>=2.26.0 || >=3 || >=4 || >=5 || >=6'
 
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
@@ -412,6 +452,30 @@ packages:
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
 
+  '@prisma/client@6.2.1':
+    resolution: {integrity: sha512-msKY2iRLISN8t5X0Tj7hU0UWet1u0KuxSPHWuf3IRkB4J95mCvGpyQBfQ6ufcmvKNOMQSq90O2iUmJEN2e5fiA==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+
+  '@prisma/debug@6.2.1':
+    resolution: {integrity: sha512-0KItvt39CmQxWkEw6oW+RQMD6RZ43SJWgEUnzxN8VC9ixMysa7MzZCZf22LCK5DSooiLNf8vM3LHZm/I/Ni7bQ==}
+
+  '@prisma/engines-version@6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69':
+    resolution: {integrity: sha512-7tw1qs/9GWSX6qbZs4He09TOTg1ff3gYsB3ubaVNN0Pp1zLm9NC5C5MZShtkz7TyQjx7blhpknB7HwEhlG+PrQ==}
+
+  '@prisma/engines@6.2.1':
+    resolution: {integrity: sha512-lTBNLJBCxVT9iP5I7Mn6GlwqAxTpS5qMERrhebkUhtXpGVkBNd/jHnNJBZQW4kGDCKaQg/r2vlJYkzOHnAb7ZQ==}
+
+  '@prisma/fetch-engine@6.2.1':
+    resolution: {integrity: sha512-OO7O9d6Mrx2F9i+Gu1LW+DGXXyUFkP7OE5aj9iBfA/2jjDXEJjqa9X0ZmM9NZNo8Uo7ql6zKm6yjDcbAcRrw1A==}
+
+  '@prisma/get-platform@6.2.1':
+    resolution: {integrity: sha512-zp53yvroPl5m5/gXYLz7tGCNG33bhG+JYCm74ohxOq1pPnrL47VQYFfF3RbTZ7TzGWCrR3EtoiYMywUBw7UK6Q==}
+
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
@@ -509,6 +573,9 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
+  '@types/bcrypt@6.0.0':
+    resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -517,6 +584,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/node@25.2.1':
+    resolution: {integrity: sha512-CPrnr8voK8vC6eEtyRzvMpgp3VyVRhgclonE7qYi6P9sXwYb59ucfrnmFBTaP0yUi8Gk4yZg/LlTJULGxvTNsg==}
 
   '@typescript-eslint/eslint-plugin@8.54.0':
     resolution: {integrity: sha512-hAAP5io/7csFStuOmR782YmTthKBJ9ND3WVL60hcOjvtGFb+HJxH4O5huAcmcZ9v9G8P+JETiZ/G1B8MALnWZQ==}
@@ -757,6 +827,10 @@ packages:
     resolution: {integrity: sha512-ipDqC8FrAl/76p2SSWKSI+H9tFwm7vYqXQrItCuiVPt26Km0jS+NzSsBWAaBusvSbQcfJG+JitdMm+wZAgTYqg==}
     hasBin: true
 
+  bcrypt@6.0.0:
+    resolution: {integrity: sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==}
+    engines: {node: '>= 18'}
+
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
 
@@ -819,6 +893,9 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
+  csstype@3.2.3:
+    resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
@@ -869,6 +946,10 @@ packages:
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
+
+  dotenv@17.2.4:
+    resolution: {integrity: sha512-mudtfb4zRB4bVvdj0xRo+e6duH1csJRM8IukBqfTRvHotn9+LBXB8ynAidP9zHqoRC/fsllXgk4kCKlR21fIhw==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -1102,6 +1183,11 @@ packages:
       react-dom:
         optional: true
 
+  fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
@@ -1154,6 +1240,11 @@ packages:
   globalthis@1.0.4:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
     engines: {node: '>= 0.4'}
+
+  goober@2.1.18:
+    resolution: {integrity: sha512-2vFqsaDVIT9Gz7N6kAL++pLpp41l3PfDuusHcjnGLfR6+huZkl6ziX+zgVC3ZxpqWhzH6pyDdGrCeDhMIvwaxw==}
+    peerDependencies:
+      csstype: ^3.0.10
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -1334,6 +1425,9 @@ packages:
 
   jose@4.15.9:
     resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
+
+  jose@6.1.3:
+    resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -1558,8 +1652,19 @@ packages:
       sass:
         optional: true
 
+  node-addon-api@8.5.0:
+    resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
+    engines: {node: ^18 || ^20 || >= 21}
+
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
+    hasBin: true
+
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
+
+  oauth4webapi@3.8.3:
+    resolution: {integrity: sha512-pQ5BsX3QRTgnt5HxgHwgunIRaDXBdkT23tf8dfzmtTIL2LTpdmxgbpbBm0VgFWAIDlezQvQCTgnVIUmHupXHxw==}
 
   oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
@@ -1666,6 +1771,14 @@ packages:
     peerDependencies:
       preact: '>=10'
 
+  preact-render-to-string@6.5.11:
+    resolution: {integrity: sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==}
+    peerDependencies:
+      preact: '>=10'
+
+  preact@10.24.3:
+    resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
+
   preact@10.28.3:
     resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
 
@@ -1675,6 +1788,11 @@ packages:
 
   pretty-format@3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
+
+  prisma@6.2.1:
+    resolution: {integrity: sha512-hhyM0H13pQleQ+br4CkzGizS5I0oInoeTw3JfLw1BRZduBSQxPILlJLwi+46wZzj9Je7ndyQEMGw/n5cN2fknA==}
+    engines: {node: '>=18.18'}
+    hasBin: true
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -1690,6 +1808,13 @@ packages:
     resolution: {integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==}
     peerDependencies:
       react: ^19.2.3
+
+  react-hot-toast@2.6.0:
+    resolution: {integrity: sha512-bH+2EBMZ4sdyou/DPrfgIouFpcRLCJ+HoCA32UoAYHn6T3Ur5yfcDCeSr5mwldl6pFOsiocmrXMuoCJ1vV8bWg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -1919,6 +2044,9 @@ packages:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
 
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
 
@@ -1982,6 +2110,23 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
+
+  '@auth/core@0.41.1':
+    dependencies:
+      '@panva/hkdf': 1.2.1
+      jose: 6.1.3
+      oauth4webapi: 3.8.3
+      preact: 10.24.3
+      preact-render-to-string: 6.5.11(preact@10.24.3)
+
+  '@auth/prisma-adapter@2.11.1(@prisma/client@6.2.1(prisma@6.2.1))':
+    dependencies:
+      '@auth/core': 0.41.1
+      '@prisma/client': 6.2.1(prisma@6.2.1)
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
 
   '@babel/code-frame@7.29.0':
     dependencies:
@@ -2327,6 +2472,31 @@ snapshots:
 
   '@panva/hkdf@1.2.1': {}
 
+  '@prisma/client@6.2.1(prisma@6.2.1)':
+    optionalDependencies:
+      prisma: 6.2.1
+
+  '@prisma/debug@6.2.1': {}
+
+  '@prisma/engines-version@6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69': {}
+
+  '@prisma/engines@6.2.1':
+    dependencies:
+      '@prisma/debug': 6.2.1
+      '@prisma/engines-version': 6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69
+      '@prisma/fetch-engine': 6.2.1
+      '@prisma/get-platform': 6.2.1
+
+  '@prisma/fetch-engine@6.2.1':
+    dependencies:
+      '@prisma/debug': 6.2.1
+      '@prisma/engines-version': 6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69
+      '@prisma/get-platform': 6.2.1
+
+  '@prisma/get-platform@6.2.1':
+    dependencies:
+      '@prisma/debug': 6.2.1
+
   '@rtsao/scc@1.1.0': {}
 
   '@swc/helpers@0.5.15':
@@ -2407,11 +2577,19 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@types/bcrypt@6.0.0':
+    dependencies:
+      '@types/node': 25.2.1
+
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/node@25.2.1':
+    dependencies:
+      undici-types: 7.16.0
 
   '@typescript-eslint/eslint-plugin@8.54.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
@@ -2671,6 +2849,11 @@ snapshots:
 
   baseline-browser-mapping@2.9.19: {}
 
+  bcrypt@6.0.0:
+    dependencies:
+      node-addon-api: 8.5.0
+      node-gyp-build: 4.8.4
+
   brace-expansion@1.1.12:
     dependencies:
       balanced-match: 1.0.2
@@ -2738,6 +2921,8 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  csstype@3.2.3: {}
+
   damerau-levenshtein@1.0.8: {}
 
   data-view-buffer@1.0.2:
@@ -2785,6 +2970,8 @@ snapshots:
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
+
+  dotenv@17.2.4: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -3164,6 +3351,9 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
+  fsevents@2.3.3:
+    optional: true
+
   function-bind@1.1.2: {}
 
   function.prototype.name@1.1.8:
@@ -3225,6 +3415,10 @@ snapshots:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.2.0
+
+  goober@2.1.18(csstype@3.2.3):
+    dependencies:
+      csstype: 3.2.3
 
   gopd@1.2.0: {}
 
@@ -3403,6 +3597,8 @@ snapshots:
   jiti@2.6.1: {}
 
   jose@4.15.9: {}
+
+  jose@6.1.3: {}
 
   js-tokens@4.0.0: {}
 
@@ -3594,7 +3790,13 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  node-addon-api@8.5.0: {}
+
+  node-gyp-build@4.8.4: {}
+
   node-releases@2.0.27: {}
+
+  oauth4webapi@3.8.3: {}
 
   oauth@0.9.15: {}
 
@@ -3709,11 +3911,23 @@ snapshots:
       preact: 10.28.3
       pretty-format: 3.8.0
 
+  preact-render-to-string@6.5.11(preact@10.24.3):
+    dependencies:
+      preact: 10.24.3
+
+  preact@10.24.3: {}
+
   preact@10.28.3: {}
 
   prelude-ls@1.2.1: {}
 
   pretty-format@3.8.0: {}
+
+  prisma@6.2.1:
+    dependencies:
+      '@prisma/engines': 6.2.1
+    optionalDependencies:
+      fsevents: 2.3.3
 
   prop-types@15.8.1:
     dependencies:
@@ -3729,6 +3943,13 @@ snapshots:
     dependencies:
       react: 19.2.3
       scheduler: 0.27.0
+
+  react-hot-toast@2.6.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    dependencies:
+      csstype: 3.2.3
+      goober: 2.1.18(csstype@3.2.3)
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
 
   react-is@16.13.1: {}
 
@@ -4047,6 +4268,8 @@ snapshots:
       has-bigints: 1.1.0
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
+
+  undici-types@7.16.0: {}
 
   unrs-resolver@1.11.1:
     dependencies:

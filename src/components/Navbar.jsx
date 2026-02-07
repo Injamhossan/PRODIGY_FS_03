@@ -67,6 +67,7 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,6 +75,29 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Update cart count from localStorage
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+    };
+
+    // Initial load
+    updateCartCount();
+
+    // Listen for storage changes (when cart is updated)
+    window.addEventListener("storage", updateCartCount);
+    
+    // Custom event for same-page cart updates
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
   }, []);
 
   return (
@@ -86,9 +110,9 @@ export default function Navbar() {
             <Image
               src={logo}
               alt="Artisan Logo"
-              width={120}
-              height={80}
-              className="h-8 w-auto object-contain"
+              width={180}
+              height={120}
+              className="h-12 w-auto object-contain"
               priority
             />
           </Link>
@@ -131,12 +155,14 @@ export default function Navbar() {
               </Link>
             )}
 
-            <div className="p-2 hover:bg-zinc-100 rounded-full cursor-pointer transition-colors group relative">
+            <Link href="/cart" className="p-2 hover:bg-zinc-100 rounded-full cursor-pointer transition-colors group relative">
               <ShoppingBag className="w-5 h-5 group-hover:text-[#d2714e] transition-colors" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-[#d2714e] text-white text-[10px] flex items-center justify-center rounded-full font-bold">
-                0
-              </span>
-            </div>
+              {cartCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-[#d2714e] text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       </nav>

@@ -13,6 +13,8 @@ export const metadata = {
 
 import { Providers } from "@/components/Providers";
 
+import { Toaster } from "react-hot-toast";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -20,6 +22,7 @@ export default function RootLayout({ children }) {
         className={`${inter.className} antialiased`}
       >
         <Providers>
+          <Toaster position="top-center" />
           {children}
         </Providers>
       </body>

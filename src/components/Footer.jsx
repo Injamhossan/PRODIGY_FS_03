@@ -27,9 +27,9 @@ export default function Footer() {
             <Image
               src={logo}
               alt="Artisan Logo"
-              width={120}
-              height={40}
-              className="h-8 w-auto object-contain mb-8"
+              width={180}
+              height={120}
+              className="h-12 w-auto object-contain mb-8"
             />
             <p className="text-zinc-500 text-sm leading-relaxed mb-8 max-w-sm">
               Crafting premium lifestyle pieces that blend timeless elegance with modern functionality. Sustainably sourced, artisan-made.
