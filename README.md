@@ -1,112 +1,107 @@
-# Prodigy Full-Stack E-commerce Platform (FS_03)
+# Artisan - Premium Full-Stack E-commerce Platform
 
-A modern, full-stack E-commerce application built with Next.js, Prisma, and PostgreSQL. This project features a robust authentication system, product management for admins, and a seamless shopping experience for users.
+A high-end, full-stack E-commerce experience designed for artisan-crafted furniture and home decor. Built with a cutting-edge architectural stack featuring **Next.js 15**, **Redux Toolkit**, **Prisma**, and **PostgreSQL**.
 
-## 🚀 Features
+## ✨ Key Features
 
-- **Authentication**: Secure user login and signup using NextAuth.js with Prisma adapter.
-- **Roles**: Support for both `USER` and `ADMIN` roles.
-- **Admin Dashboard**: Comprehensive control panel to manage products, categories, and view orders.
-- **Interactive Homepage**:
-  - Dynamic Hero section
-  - Featured and Trending products showcase
-  - Category-based navigation
-  - Newsletter subscription
-- **Shopping Experience**:
-  - Interactive Product Catalog
-  - Dynamic Shopping Cart
-  - Secure Checkout Process
-- **Newsletter**: Newsletter subscription system to keep users updated.
-- **Modern UI**: Built with Tailwind CSS 4, Lucide React icons, and smooth animations using Framer Motion.
-- **Responsive Design**: Fully optimized for mobile, tablet, and desktop screens.
+- **🛍️ Reactive Shopping Experience**:
+  - Global state management using **Redux Toolkit** for real-time Cart and Wishlist updates.
+  - Smooth, lag-free interactions powered by **Framer Motion** animations.
+- **🔐 Advanced Authentication**:
+  - Secure login/signup system via **NextAuth.js**.
+  - Support for **Google**, **GitHub**, and traditional Credentials providers.
+  - Role-based access control (`ADMIN` vs `USER`).
+- **🛡️ Admin Command Center**:
+  - Full management of products, categories, and orders.
+  - Payment tracking and order status management.
+- **🎨 Premium Design System**:
+  - Vibrant, glassmorphic UI using **Vanilla CSS** and **Tailwind CSS**.
+  - Modern typography and custom-curated icon set from **Lucide React**.
+- **💳 Seamless Checkout & Payments**:
+  - Integrated checkout flow with support for simulated payments (SSLCommerz integration).
+  - Order persistence and transaction tracking.
+- **👤 Personalized Dashboard**:
+  - User profile settings (Name, Phone, Location).
+  - Dedicated order history and wishlist collection.
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **Core**: [Next.js 15](https://nextjs.org/) (App Router)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) & [React Redux](https://react-redux.js.org/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) (via Supabase)
 - **ORM**: [Prisma](https://www.prisma.io/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Auth**: [NextAuth.js](https://next-auth.js.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) & [Vanilla CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
 - **Animations**: [Framer Motion](https://www.framer.com/motion/)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **Toast Notifications**: [React Hot Toast](https://react-hot-toast.com/)
 
 ## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed:
-- Node.js (Latest LTS version recommended)
-- PostgreSQL (Local or Cloud instance like Vercel Postgres/Supabase)
-- PNPM (Recommended package manager)
+- **Node.js**: v18.0.0 or higher
+- **PNPM**: v8.0.0 or higher (Recommended)
+- **PostgreSQL**: Local instance or Cloud (Supabase/Neon)
 
 ## ⚙️ Getting Started
 
-### 1. Clone the Repository
+### 1. Installation
 ```bash
 git clone <repository-url>
 cd prodigy_fs_03
-```
-
-### 2. Install Dependencies
-```bash
 pnpm install
 ```
 
-### 3. Environment Variables
-Create a `.env` file in the root directory and add the following:
-
+### 2. Environment Configuration
+Create a `.env.local` file:
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/dbname?schema=public"
-DIRECT_URL="postgresql://user:password@localhost:5432/dbname?schema=public"
-
-NEXTAUTH_SECRET="your-secret-key"
+DATABASE_URL="your-postgresql-url"
+DIRECT_URL="your-direct-postgresql-url"
+NEXTAUTH_SECRET="your-secret"
 NEXTAUTH_URL="http://localhost:3000"
+
+GOOGLE_CLIENT_ID="your-google-id"
+GOOGLE_CLIENT_SECRET="your-google-secret"
+GITHUB_ID="your-github-id"
+GITHUB_SECRET="your-github-secret"
 ```
 
-### 4. Database Setup
-Run Prisma migrations to set up your database schema:
-
+### 3. Database Initialization
 ```bash
-npx prisma migrate dev --name init
 npx prisma generate
+npx prisma db push
 ```
 
-### 5. Run the Project
-Start the development server:
-
+### 4. Development Mode
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📁 Project Structure
+## 📁 Architecture Overview
 
 ```text
 src/
-├── app/            # Next.js App Router routes
-│   ├── admin/      # Administrative routes
-│   ├── api/        # Backend API endpoints
-│   ├── cart/       # Shopping cart page
-│   ├── checkout/   # Checkout process
-│   └── ...         # Other user-facing pages
-├── components/     # Reusable UI components
-├── lib/            # Utility libraries (Prisma client, etc.)
-└── assets/         # Static assets and images
-prisma/             # Database schema and migrations
-public/             # Static public files
+├── app/            # Next.js App Router (Pages & API)
+│   ├── admin/      # Management Dashboard
+│   ├── api/        # Serverless API routes
+│   ├── dashboard/  # User Personal Area
+│   └── (store)/    # Product, Cart, and Checkout pages
+├── components/     # High-fidelity UI Components
+├── redux/          # Global State (Cart & Wishlist Slices)
+├── assets/         # Static Media (Logos, Optimized Images)
+├── lib/            # Shared Utilities (Prisma, Auth Config)
+└── styles/         # Global CSS and Design Tokens
 ```
 
 ## 📜 Available Scripts
 
-- `pnpm dev`: Starts the development server.
-- `pnpm build`: Builds the application for production.
-- `pnpm start`: Starts the production server.
-- `pnpm lint`: Runs ESLint for code quality checks.
+- `pnpm dev`: Start development server on port 3000.
+- `pnpm build`: Generate optimized production build.
+- `pnpm start`: Launch production server.
+- `pnpm lint`: Perform static code analysis.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions to enhance the Artisan experience. Please open an issue or submit a pull request for any improvements.
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+Licensed under the [MIT License](LICENSE).

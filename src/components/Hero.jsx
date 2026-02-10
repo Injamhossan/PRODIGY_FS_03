@@ -4,6 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
+import mainImage from "../assets/main_image.jpg";
+import favIcon from "../assets/Main/ariston-fav.svg";
 
 export default function Hero() {
   return (
@@ -68,7 +70,7 @@ export default function Hero() {
             className="relative rounded-[40px] overflow-hidden shadow-2xl z-0"
           >
             <Image
-              src="/assets/main_image.jpg"
+              src={mainImage}
               alt="Artisan Sofa"
               width={800}
               height={1000}
@@ -97,7 +99,7 @@ export default function Hero() {
           >
             <div className="w-12 h-12 bg-zinc-100 rounded-lg overflow-hidden">
                <div className="w-full h-full bg-[#d2714e]/10 flex items-center justify-center">
-                  <Image src="/assets/Main/ariston fav (1).svg" width={24} height={24} alt="icon" className="opacity-20" />
+                  <Image src={favIcon} width={24} height={24} alt="icon" className="opacity-20" />
                </div>
             </div>
             <div>
