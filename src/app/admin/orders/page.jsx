@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShoppingBag, Eye, Download, Search, Filter } from "lucide-react";
+import { ShoppingBag, Eye, Download, Search, Filter, XCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 export default function AdminOrders() {
@@ -42,6 +42,42 @@ export default function AdminOrders() {
       day: "2-digit", 
       year: "numeric" 
     });
+  };
+
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res.ok) {
+        toast.success("Status updated!");
+        fetchOrders(); // Refresh list
+      } else {
+        toast.error("Update failed");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!confirm("Are you sure you want to delete this order?")) return;
+    
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        toast.success("Order deleted");
+        fetchOrders();
+      }
+    } catch (error) {
+      toast.error("Delete failed");
+    }
   };
 
   return (
@@ -101,7 +137,6 @@ export default function AdminOrders() {
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Order ID</th>
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Customer</th>
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Date</th>
-                    <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Items</th>
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Status</th>
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">Amount</th>
                     <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-widest text-right">Action</th>
@@ -125,23 +160,34 @@ export default function AdminOrders() {
                         <span className="text-sm text-zinc-400 font-medium">{formatDate(order.createdAt)}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-zinc-500 font-medium">{order.items?.length || 0} items</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest ${
-                          order.status === 'Delivered' ? 'bg-green-50 text-green-500' :
-                          order.status === 'Pending' ? 'bg-orange-50 text-orange-500' :
-                          order.status === 'Shipped' ? 'bg-purple-50 text-purple-500' :
-                          order.status === 'Cancelled' ? 'bg-red-50 text-red-500' :
-                          'bg-blue-50 text-blue-500'
-                        }`}>
-                          {order.status}
-                        </span>
+                        <select 
+                          value={order.status}
+                          onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                          className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest border-none outline-none cursor-pointer ${
+                            order.status === 'Delivered' ? 'bg-green-50 text-green-500' :
+                            order.status === 'Pending' ? 'bg-orange-50 text-orange-500' :
+                            order.status === 'Shipped' ? 'bg-purple-50 text-purple-500' :
+                            order.status === 'Cancelled' ? 'bg-red-50 text-red-500' :
+                            'bg-blue-50 text-blue-500'
+                          }`}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4 text-sm font-bold text-[#2b2825]">${order.total.toFixed(2)}</td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-4 text-right flex justify-end gap-2">
                         <button className="p-2 hover:bg-zinc-100 rounded-xl text-zinc-400 hover:text-[#d2714e] transition-all">
                           <Eye className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteOrder(order.id)}
+                          className="p-2 hover:bg-red-50 rounded-xl text-zinc-400 hover:text-red-500 transition-all"
+                        >
+                          <XCircle className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>

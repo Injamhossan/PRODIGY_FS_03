@@ -10,9 +10,13 @@ import { motion } from "framer-motion";
 import { ShoppingBag, Heart, Share2, Minus, Plus, Star, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
 
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
+
 export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -45,32 +49,14 @@ export default function ProductDetailsPage() {
   };
 
   const handleAddToCart = () => {
-    // Get existing cart from localStorage
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    
-    // Check if product already in cart
-    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
-    
-    if (existingItemIndex > -1) {
-      // Update quantity if already exists
-      existingCart[existingItemIndex].quantity += quantity;
-    } else {
-      // Add new item to cart
-      existingCart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        category: product.category?.name,
-        quantity: quantity,
-      });
-    }
-    
-    // Save to localStorage
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    
-    // Dispatch custom event to update cart count in Navbar
-    window.dispatchEvent(new Event("cartUpdated"));
+    dispatch(addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category?.name,
+      quantity: quantity,
+    }));
     
     // Show success message
     toast.success(`Added ${quantity} ${product.name} to cart!`);

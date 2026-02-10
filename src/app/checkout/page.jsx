@@ -9,12 +9,18 @@ import { motion } from "framer-motion";
 import { CreditCard, Lock, ArrowLeft, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
 
+import { useSelector, useDispatch } from "react-redux";
+import { clearCart } from "@/redux/slices/cartSlice";
+
 export default function CheckoutPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { data: session } = useSession();
-  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   
+  // Redux Cart State
+  const cartItems = useSelector((state) => state.cart.items);
+
   const [formData, setFormData] = useState({
     // Contact Information
     email: "",
@@ -35,13 +41,6 @@ export default function CheckoutPage() {
     expiryDate: "",
     cvv: "",
   });
-
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-  }, []);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal > 100 ? 0 : 15;
@@ -82,6 +81,8 @@ export default function CheckoutPage() {
           email: formData.email,
           phone: formData.phone,
         },
+        paymentMethod: "SSLCommerz",
+        transactionId: `SSL-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
       };
 
       const res = await fetch("/api/orders", {
@@ -91,9 +92,8 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        // Clear cart
-        localStorage.setItem("cart", JSON.stringify([]));
-        window.dispatchEvent(new Event("cartUpdated"));
+        // Clear cart using Redux
+        dispatch(clearCart());
         
         toast.success("Order placed successfully!");
         

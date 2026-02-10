@@ -9,36 +9,20 @@ import { motion } from "framer-motion";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
 import { toast } from "react-hot-toast";
 
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuantity, removeFromCart } from "@/redux/slices/cartSlice";
+
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
-  useEffect(() => {
-    // Load cart from localStorage
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-  }, []);
-
-  const updateCart = (newCart) => {
-    setCartItems(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
-    // Dispatch custom event to update cart count in Navbar
-    window.dispatchEvent(new Event("cartUpdated"));
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
+  const handleUpdateQuantity = (productId, newQuantity) => {
     if (newQuantity < 1) return;
-    
-    const updatedCart = cartItems.map(item =>
-      item.id === productId ? { ...item, quantity: newQuantity } : item
-    );
-    updateCart(updatedCart);
+    dispatch(updateQuantity({ id: productId, quantity: newQuantity }));
   };
 
-  const removeItem = (productId) => {
-    const updatedCart = cartItems.filter(item => item.id !== productId);
-    updateCart(updatedCart);
+  const handleRemoveItem = (productId) => {
+    dispatch(removeFromCart(productId));
     toast.success("Item removed from cart");
   };
 
@@ -109,7 +93,7 @@ export default function CartPage() {
                           )}
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => handleRemoveItem(item.id)}
                           className="p-2 hover:bg-zinc-100 rounded-xl text-zinc-400 hover:text-red-500 transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -120,14 +104,14 @@ export default function CartPage() {
                         {/* Quantity Selector */}
                         <div className="flex items-center border border-zinc-200 rounded-xl overflow-hidden">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                             className="p-2 hover:bg-zinc-50 transition-colors"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
                           <span className="px-4 font-bold text-[#2b2825]">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                             className="p-2 hover:bg-zinc-50 transition-colors"
                           >
                             <Plus className="w-4 h-4" />

@@ -18,6 +18,8 @@ export default function AdminDashboard() {
     totalProducts: 0,
     totalUsers: 0,
     totalCategories: 0,
+    totalRevenue: 0,
+    totalOrders: 0,
   });
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,26 +30,27 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch products
-      const productsRes = await fetch("/api/products");
+      // Fetch data in parallel
+      const [productsRes, usersRes, categoriesRes, ordersRes] = await Promise.all([
+        fetch("/api/products"),
+        fetch("/api/users"),
+        fetch("/api/categories"),
+        fetch("/api/orders")
+      ]);
+
       const products = await productsRes.json();
-
-      // Fetch users
-      const usersRes = await fetch("/api/users");
       const users = await usersRes.json();
-
-      // Fetch categories
-      const categoriesRes = await fetch("/api/categories");
       const categories = await categoriesRes.json();
-
-      // Fetch orders
-      const ordersRes = await fetch("/api/orders");
       const orders = await ordersRes.json();
+
+      const totalRevenue = orders.reduce((sum, order) => sum + (order.paymentStatus === 'Paid' ? order.total : 0), 0);
 
       setStats({
         totalProducts: products.length || 0,
         totalUsers: users.length || 0,
         totalCategories: categories.length || 0,
+        totalRevenue: totalRevenue || 0,
+        totalOrders: orders.length || 0,
       });
 
       // Set recent orders (last 5)
@@ -60,10 +63,10 @@ export default function AdminDashboard() {
   };
 
   const statsData = [
-    { label: "Total Revenue", value: "$0.00", trend: "0%", icon: BarChart3 },
-    { label: "Total Orders", value: "0", trend: "0%", icon: ShoppingBag },
-    { label: "Total Customers", value: stats.totalUsers.toString(), trend: "0%", icon: Users },
-    { label: "Active Products", value: stats.totalProducts.toString(), trend: "0%", icon: Box },
+    { label: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}`, trend: "+12%", icon: BarChart3 },
+    { label: "Total Orders", value: stats.totalOrders.toString(), trend: "+5%", icon: ShoppingBag },
+    { label: "Total Customers", value: stats.totalUsers.toString(), trend: "+8%", icon: Users },
+    { label: "Active Products", value: stats.totalProducts.toString(), trend: "+2%", icon: Box },
   ];
 
   return (

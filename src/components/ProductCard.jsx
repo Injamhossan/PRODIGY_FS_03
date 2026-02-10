@@ -4,50 +4,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ShoppingBag } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
+import { toggleWishlist } from "@/redux/slices/wishlistSlice";
+import { Heart, ShoppingBag } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 export default function ProductCard({ id, slug, image, tag, name, description, price, originalPrice, discount, category }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const productSlug = slug || id; // Fallback to ID if no slug
   
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const isInWishlist = wishlistItems.some((item) => item.id === id);
+
   const handleAddToCart = (e) => {
     e.preventDefault(); // Prevent link navigation
-    
-    // Get existing cart from localStorage
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    
-    // Check if product already in cart
-    const existingItemIndex = existingCart.findIndex(item => item.id === id);
-    
-    if (existingItemIndex > -1) {
-      // Update quantity if already exists
-      existingCart[existingItemIndex].quantity += 1;
-    } else {
-      // Add new item to cart
-      existingCart.push({
-        id,
-        name,
-        price,
-        image,
-        category,
-        quantity: 1,
-      });
-    }
-    
-    // Save to localStorage
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    
-    // Dispatch custom event to update cart count in Navbar
-    window.dispatchEvent(new Event("cartUpdated"));
-    
-    // Show success message
+    dispatch(addToCart({ id, name, price, image, category }));
     toast.success(`Added ${name} to cart!`);
-    
-    // Redirect to cart page
-    setTimeout(() => {
-      router.push("/cart");
-    }, 500);
+    setTimeout(() => { router.push("/cart"); }, 500);
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.preventDefault();
+    dispatch(toggleWishlist({ id, name, price, image, category }));
+    toast.success(isInWishlist ? "Removed from wishlist" : "Added to wishlist");
   };
   
   return (
@@ -64,9 +45,19 @@ export default function ProductCard({ id, slug, image, tag, name, description, p
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
           
+          {/* Wishlist Button */}
+          <button 
+            onClick={handleToggleWishlist}
+            className={`absolute top-4 right-4 p-2.5 rounded-full shadow-lg transition-all transform hover:scale-110 z-10 ${
+              isInWishlist ? "bg-[#d2714e] text-white" : "bg-white/80 backdrop-blur-md text-zinc-400 hover:text-[#d2714e]"
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${isInWishlist ? "fill-current" : ""}`} />
+          </button>
+
           {/* Discount Badge */}
           {discount && (
-            <div className="absolute top-4 left-4 bg-[#d2714e] text-white text-xs font-bold px-3 py-1.5 rounded-full">
+            <div className="absolute top-4 left-4 bg-[#d2714e] text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">
               {discount}
             </div>
           )}

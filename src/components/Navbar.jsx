@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, User, ShoppingBag, X } from "lucide-react";
+import { Search, User, ShoppingBag, X, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/Main/logo.svg";
 
@@ -61,13 +61,17 @@ function SearchOverlay({ isOpen, onClose }) {
   );
 }
 
+import { useSelector } from "react-redux";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  
+  // Redux Cart State
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,29 +79,6 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Update cart count from localStorage
-  useEffect(() => {
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      setCartCount(totalItems);
-    };
-
-    // Initial load
-    updateCartCount();
-
-    // Listen for storage changes (when cart is updated)
-    window.addEventListener("storage", updateCartCount);
-    
-    // Custom event for same-page cart updates
-    window.addEventListener("cartUpdated", updateCartCount);
-
-    return () => {
-      window.removeEventListener("storage", updateCartCount);
-      window.removeEventListener("cartUpdated", updateCartCount);
-    };
   }, []);
 
   return (
@@ -135,18 +116,39 @@ export default function Navbar() {
             </button>
             
             {session ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 bg-zinc-50/50 p-1.5 pr-4 rounded-2xl border border-zinc-100">
                 <Link 
                   href={session.user.email === "admin@artisan.com" ? "/admin" : "/dashboard"}
-                  className="text-xs font-bold text-[#d2714e] hover:underline uppercase tracking-widest transition-all"
+                  className="flex items-center gap-3 group mr-2"
                 >
-                  {session.user.email === "admin@artisan.com" ? "Admin" : "Dashboard"}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-xl bg-white overflow-hidden ring-2 ring-white shadow-sm border border-zinc-100 transition-all duration-300 group-hover:shadow-md group-hover:ring-[#d2714e]/20 group-hover:scale-105 active:scale-95">
+                      <Image 
+                        src={session.user.image || `https://ui-avatars.com/api/?name=${session.user.name || 'User'}&background=d2714e&color=fff&bold=true&size=100`}
+                        alt="Profile"
+                        width={40}
+                        height={40}
+                        className="object-cover"
+                      />
+                    </div>
+                    {session.user.email === "admin@artisan.com" && (
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#d2714e] rounded-full border-2 border-white" />
+                    )}
+                  </div>
+                  <div className="hidden lg:block text-left">
+                    <p className="text-[10px] font-bold text-[#2b2825] leading-none mb-0.5">{session.user.name?.split(' ')[0]}</p>
+                    <p className="text-[9px] font-bold text-[#d2714e] uppercase tracking-widest leading-none">
+                      {session.user.email === "admin@artisan.com" ? "Admin" : "Account"}
+                    </p>
+                  </div>
                 </Link>
+                <div className="w-px h-6 bg-zinc-200 mx-1" />
                 <button 
-                  onClick={() => signOut()}
-                  className="text-xs font-bold text-zinc-400 hover:text-[#2b2825] transition-colors uppercase tracking-widest"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  title="Sign Out"
                 >
-                  Sign Out
+                  <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, LayoutDashboard, ShoppingBag, Users, Bell, Search } from "lucide-react";
+import { Box, LayoutDashboard, ShoppingBag, Users, Bell, Search, CreditCard } from "lucide-react";
 import Image from "next/image";
 import logo from "../../assets/Main/logo.svg";
 import Link from "next/link";
@@ -13,6 +13,7 @@ export default function AdminLayout({ children }) {
     { label: "Overview", icon: LayoutDashboard, href: "/admin" },
     { label: "Products", icon: Box, href: "/admin/products" },
     { label: "Orders", icon: ShoppingBag, href: "/admin/orders" },
+    { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "Customers", icon: Users, href: "/admin/customers" },
   ];
 

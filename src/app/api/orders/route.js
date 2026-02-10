@@ -45,9 +45,12 @@ export async function POST(req) {
       data: {
         userId,
         total: parseFloat(total),
-        status: "Pending",
-        shippingAddress: JSON.stringify(shippingAddress),
-        contactInfo: JSON.stringify(contactInfo),
+        status: "Processing",
+        paymentStatus: body.paymentMethod ? "Paid" : "Unpaid",
+        paymentMethod: body.paymentMethod || "COD",
+        transactionId: body.transactionId || `TXN-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+        shippingAddress: typeof shippingAddress === 'string' ? shippingAddress : JSON.stringify(shippingAddress),
+        contactInfo: typeof contactInfo === 'string' ? contactInfo : JSON.stringify(contactInfo),
         items: {
           create: items.map(item => ({
             productId: item.productId,
