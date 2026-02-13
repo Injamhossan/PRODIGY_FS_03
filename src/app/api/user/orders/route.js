@@ -32,6 +32,8 @@ export async function GET() {
       date: new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       status: order.status,
       total: order.total,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
       items: order.items.map(item => ({
         name: item.product.name,
         price: item.price,

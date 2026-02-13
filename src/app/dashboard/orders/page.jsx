@@ -88,14 +88,22 @@ export default function OrdersPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
+                  <div className="text-right mr-4">
+                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-1">Payment</p>
+                    <p className="text-xs font-bold text-[#2b2825]">{order.paymentMethod}</p>
+                  </div>
                   <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${
-                    order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                    order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 
+                    order.paymentStatus === 'Failed' ? 'bg-red-100 text-red-700' :
+                    'bg-amber-100 text-amber-700'
+                  }`}>
+                    {order.paymentStatus}
+                  </span>
+                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+                    order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
                   }`}>
                     {order.status}
                   </span>
-                  <button className="px-4 py-1.5 bg-white border border-zinc-100 rounded-lg text-xs font-bold text-[#2b2825] hover:bg-zinc-50 transition-colors">
-                    View Invoice
-                  </button>
                 </div>
               </div>
 

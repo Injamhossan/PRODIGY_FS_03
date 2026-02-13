@@ -46,7 +46,7 @@ export async function POST(req) {
         userId,
         total: parseFloat(total),
         status: "Processing",
-        paymentStatus: body.paymentMethod ? "Paid" : "Unpaid",
+        paymentStatus: body.paymentStatus || (body.paymentMethod === "Cash On Delivery" ? "Unpaid" : "Paid"),
         paymentMethod: body.paymentMethod || "COD",
         transactionId: body.transactionId || `TXN-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
         shippingAddress: typeof shippingAddress === 'string' ? shippingAddress : JSON.stringify(shippingAddress),

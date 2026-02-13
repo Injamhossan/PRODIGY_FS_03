@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { CreditCard, Lock, ArrowLeft, Check } from "lucide-react";
+import { CreditCard, Lock, ArrowLeft, Check, Banknote } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -21,6 +21,7 @@ export default function CheckoutPage() {
   // Redux Cart State
   const cartItems = useSelector((state) => state.cart.items);
 
+  const [paymentMethod, setPaymentMethod] = useState("COD"); 
   const [formData, setFormData] = useState({
     // Contact Information
     email: "",
@@ -35,7 +36,7 @@ export default function CheckoutPage() {
     zipCode: "",
     country: "Bangladesh",
     
-    // Payment
+    // Payment (only for Online)
     cardNumber: "",
     cardName: "",
     expiryDate: "",
@@ -52,7 +53,7 @@ export default function CheckoutPage() {
     
     if (!session) {
       toast.error("Please login to place an order");
-      router.push("/login");
+      router.push("/login?callbackUrl=/checkout");
       return;
     }
     
@@ -81,8 +82,10 @@ export default function CheckoutPage() {
           email: formData.email,
           phone: formData.phone,
         },
-        paymentMethod: "SSLCommerz",
-        transactionId: `SSL-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+        paymentMethod: paymentMethod === "COD" ? "Cash On Delivery" : "SSLCommerz",
+        transactionId: paymentMethod === "COD" 
+          ? `COD-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
+          : `SSL-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
       };
 
       const res = await fetch("/api/orders", {
@@ -95,18 +98,19 @@ export default function CheckoutPage() {
         // Clear cart using Redux
         dispatch(clearCart());
         
-        toast.success("Order placed successfully!");
+        toast.success(paymentMethod === "COD" ? "Order placed successfully!" : "Payment successful! Order placed.");
         
-        // Redirect to home or orders page
+        // Redirect to dashboard orders page
         setTimeout(() => {
-          router.push("/");
-        }, 1000);
+          router.push("/dashboard/orders");
+        }, 1500);
       } else {
-        toast.error("Failed to place order");
+        const errorData = await res.json();
+        toast.error(errorData.error || "Failed to place order");
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      toast.error("An error occurred");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -256,67 +260,111 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Payment Information */}
+                {/* Payment Method Selection */}
                 <div className="bg-white rounded-3xl p-8 border border-zinc-100 shadow-sm">
-                  <div className="flex items-center gap-2 mb-6">
-                    <Lock className="w-5 h-5 text-green-500" />
-                    <h2 className="text-2xl font-bold text-[#2b2825]">Payment Information</h2>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-bold text-zinc-700 mb-2">Card Number</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          required
-                          value={formData.cardNumber}
-                          onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                          className="w-full border border-zinc-200 rounded-xl px-4 py-3 pl-12 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength="19"
-                        />
-                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-zinc-700 mb-2">Cardholder Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.cardName}
-                        onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                        className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
-                        placeholder="John Doe"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 mb-2">Expiry Date</label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.expiryDate}
-                          onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                          className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
-                          placeholder="MM/YY"
-                          maxLength="5"
-                        />
+                  <h2 className="text-2xl font-bold text-[#2b2825] mb-6">Payment Method</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("COD")}
+                      className={`p-6 rounded-2xl border-2 transition-all text-left flex items-start gap-4 ${
+                        paymentMethod === "COD"
+                          ? "border-[#d2714e] bg-[#d2714e]/5"
+                          : "border-zinc-100 hover:border-zinc-200"
+                      }`}
+                    >
+                      <div className={`p-3 rounded-xl ${paymentMethod === "COD" ? "bg-[#d2714e] text-white" : "bg-zinc-100 text-zinc-500"}`}>
+                        <Banknote className="w-6 h-6" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-zinc-700 mb-2">CVV</label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.cvv}
-                          onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
-                          className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
-                          placeholder="123"
-                          maxLength="4"
-                        />
+                        <p className="font-bold text-[#2b2825]">Cash on Delivery</p>
+                        <p className="text-xs text-zinc-500 mt-1">Pay when you receive the product</p>
                       </div>
-                    </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("ONLINE")}
+                      className={`p-6 rounded-2xl border-2 transition-all text-left flex items-start gap-4 ${
+                        paymentMethod === "ONLINE"
+                          ? "border-[#d2714e] bg-[#d2714e]/5"
+                          : "border-zinc-100 hover:border-zinc-200"
+                      }`}
+                    >
+                      <div className={`p-3 rounded-xl ${paymentMethod === "ONLINE" ? "bg-[#d2714e] text-white" : "bg-zinc-100 text-zinc-500"}`}>
+                        <CreditCard className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-[#2b2825]">Online Payment</p>
+                        <p className="text-xs text-zinc-500 mt-1">bKash, Cards or Net Banking</p>
+                      </div>
+                    </button>
                   </div>
                 </div>
+
+                {/* Card Information (Conditional) */}
+                {paymentMethod === "ONLINE" && (
+                  <div className="bg-white rounded-3xl p-8 border border-zinc-100 shadow-sm">
+                    <div className="flex items-center gap-2 mb-6">
+                      <Lock className="w-5 h-5 text-green-500" />
+                      <h2 className="text-2xl font-bold text-[#2b2825]">Card Information</h2>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-bold text-zinc-700 mb-2">Card Number</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            required
+                            value={formData.cardNumber}
+                            onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
+                            className="w-full border border-zinc-200 rounded-xl px-4 py-3 pl-12 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
+                            placeholder="1234 5678 9012 3456"
+                            maxLength="19"
+                          />
+                          <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-zinc-700 mb-2">Cardholder Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.cardName}
+                          onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
+                          className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
+                          placeholder="John Doe"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-bold text-zinc-700 mb-2">Expiry Date</label>
+                          <input
+                            type="text"
+                            required
+                            value={formData.expiryDate}
+                            onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                            className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
+                            placeholder="MM/YY"
+                            maxLength="5"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-zinc-700 mb-2">CVV</label>
+                          <input
+                            type="text"
+                            required
+                            value={formData.cvv}
+                            onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
+                            className="w-full border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#d2714e]/20"
+                            placeholder="123"
+                            maxLength="4"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <button
                   type="submit"
