@@ -1,10 +1,26 @@
 import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
 import { generateSlug } from "@/lib/utils";
+import redis from "@/lib/redis";
+
+const CACHE_KEY = "all_products";
 
 // GET - Fetch all products
 export async function GET() {
   try {
+    // 1. Try to get data from Redis
+    try {
+      const cachedProducts = await redis.get(CACHE_KEY);
+      if (cachedProducts) {
+        // console.log("Serving from Cache");
+        return NextResponse.json(JSON.parse(cachedProducts));
+      }
+    } catch (redisError) {
+      console.error("Redis GET error:", redisError);
+      // Continue to fetch from DB if Redis fails
+    }
+
+    // 2. If not in cache, fetch from Database
     const products = await prisma.product.findMany({
       include: {
         category: true,
@@ -13,6 +29,16 @@ export async function GET() {
         createdAt: "desc",
       },
     });
+
+    // 3. Save to Redis for future requests (Expires in 1 hour)
+    try {
+      if (products.length > 0) {
+        await redis.set(CACHE_KEY, JSON.stringify(products), "EX", 3600);
+      }
+    } catch (redisError) {
+      console.error("Redis SET error:", redisError);
+    }
+
     return NextResponse.json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -49,6 +75,13 @@ export async function POST(req) {
         category: true,
       },
     });
+
+    // Invalidate Cache after creating a new product
+    try {
+      await redis.del(CACHE_KEY);
+    } catch (redisError) {
+      console.error("Redis DEL error:", redisError);
+    }
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
