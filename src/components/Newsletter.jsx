@@ -44,6 +44,7 @@ export default function Newsletter() {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  suppressHydrationWarning
                   className="w-full bg-white/10 border border-white/20 rounded-2xl py-5 px-6 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all backdrop-blur-sm"
                 />
                 <button className="absolute right-2 top-2 bottom-2 bg-white text-[#d2714e] px-6 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-white/90 transition-colors">

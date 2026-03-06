@@ -15,7 +15,7 @@ A high-end, full-stack E-commerce experience designed for artisan-crafted furnit
   - Full management of products, categories, and orders.
   - Payment tracking and order status management.
 - **🎨 Premium Design System**:
-  - Vibrant, glassmorphic UI using **Vanilla CSS** and **Tailwind CSS**.
+  - Vibrant, glassmorphic UI using **Tailwind CSS**.
   - Modern typography and custom-curated icon set from **Lucide React**.
 - **💳 Seamless Checkout & Payments**:
   - Integrated checkout flow with support for simulated payments (SSLCommerz integration).
@@ -26,7 +26,7 @@ A high-end, full-stack E-commerce experience designed for artisan-crafted furnit
 
 ## 🛠️ Tech Stack
 
-- **Core**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Core**: [Next.js 16](https://nextjs.org/) (App Router)
 - **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) & [React Redux](https://react-redux.js.org/)
 - **Database**: [PostgreSQL](https://www.postgresql.org/) (via Supabase)
 - **ORM**: [Prisma](https://www.prisma.io/)
@@ -72,7 +72,8 @@ npx prisma db push
 
 ### 4. Development Mode
 ```bash
-pnpm dev
+pnpm dev 
+npm run dev
 ```
 
 ## 📁 Architecture Overview
